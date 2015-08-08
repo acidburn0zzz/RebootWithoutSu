@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">无su重启</string>
-    <string name="xposed_summary">让“Xposed Installer”中的重启不再需要su。</string>
+    <string name="app_name">无权重启</string>
+    <string name="xposed_summary">让“Xposed Installer”中的重启不再需要提权(su)。</string>
 
 </resources>

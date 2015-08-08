@@ -56,7 +56,12 @@ public class XposedMod implements IXposedHookZygoteInit, IXposedHookLoadPackage 
         if ("de.robv.android.xposed.installer".equals(lpparam.packageName)) {
             XC_MethodHook rebootMethodHook = new RebootMethodHook();
             Class<?> RootUtil = XposedHelpers.findClass("de.robv.android.xposed.installer.util.RootUtil", lpparam.classLoader);
-            XposedHelpers.findAndHookMethod(RootUtil, "startShell", XC_MethodReplacement.returnConstant(true));
+            XposedHelpers.findAndHookMethod(RootUtil, "startShell", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    param.setResult(true);
+                }
+            });
             XposedHelpers.findAndHookMethod(RootUtil, "execute", String.class, List.class, rebootMethodHook);
             XposedHelpers.findAndHookMethod(RootUtil, "executeWithBusybox", String.class, List.class, rebootMethodHook);
         }
@@ -66,20 +71,18 @@ public class XposedMod implements IXposedHookZygoteInit, IXposedHookLoadPackage 
     private static class RebootMethodHook extends XC_MethodHook {
         @Override
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-            int result = -1;
             String command = (String) param.args[0];
             Application application = AndroidAppHelper.currentApplication();
             if (command != null && application != null) {
                 Context context = application.getApplicationContext();
                 if (command.contains("ctl.restart")) {
                     context.sendBroadcast(HookUtils.newSoftRebootIntent());
-                    result = 0;
+                    param.setResult(0);
                 } else if ("reboot".equals(command)) {
                     context.sendBroadcast(HookUtils.newRebootIntent());
-                    result = 0;
+                    param.setResult(0);
                 }
             }
-            param.setResult(result);
         }
     }
 
