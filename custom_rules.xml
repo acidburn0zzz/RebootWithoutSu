@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="custom_rules">
+
+    <target name="-pre-compile">
+        <!-- add *.jar to compilier library -->
+        <pathconvert property="bootstrap.class.path">
+            <fileset dir="lib" includes="*.jar" />
+            <path refid="project.target.class.path" />
+        </pathconvert>
+        <path id="project.target.class.path">
+            <pathelement path="${bootstrap.class.path}" />
+        </path>
+    </target>
+
+    <property name="java.compilerargs" value="-Xlint:unchecked -Xlint:deprecation"/>
+
+</project>
