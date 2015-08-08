@@ -1,0 +1,2 @@
+- reboot in xposed installer without su
+- fix possible optimizing in android 5.1 when soft reboot
